@@ -1,6 +1,6 @@
 # Search Engine App
 
-This is a search engine application that allows users to search for products using Buscape API. The app provides filtering options based on product category and keyword search.
+This is a search engine application that allows users to search for products using Buscape API. The app provides filtering options based on product category and keyword search. Also the app is deployed on xxxx and it was built to a test of Full Stack
 
 ## Features
 
