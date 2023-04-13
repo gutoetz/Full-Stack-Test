@@ -1,34 +1,37 @@
 const puppeteer = require('puppeteer');
 
-async function scrapeMercadoLivre({brand, category}) {
-    console.log('duashdasuhduasda', brand)
-    let uiImage = '.ui-search-result-image__element'
-    let uiDescription = '.ui-search-item__title'
-    let uiPrice = '.price-tag-fraction'
-    let uiLayout = '.ui-search-layout__item'
-    let uiUrl = 'https://www.buscape.com.br/search?q=tv'
+async function scrape({brand, category, q}) {
+    let url = brand === 'mercadolivre' ? `https://lista.mercadolivre.com.br/${category}-${q}` : `https://www.buscape.com.br/${category}/${q}`;
+    let uiLayout = brand === 'mercadolivre' ? '.ui-search-layout__item' : '.Paper_Paper__HIHv0';
+    let uiImage = brand === 'mercadolivre' ? '.ui-search-result-image__element' : '[data-testid="product-card::image"]';
+    let uiDescription = brand === 'mercadolivre' ? '.ui-search-item__title' : '.SearchCard_ProductCard_Name__ZaO5o';
+    let uiPrice = brand === 'mercadolivre' ? '.price-tag-fraction' : '.Text_MobileHeadingS__Zxam2';
 
-    // const url = 'https://lista.mercadolivre.com.br/tv';
-    const url = 'https://www.buscape.com.br/search?q=tv';
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
   
     await page.goto(url, { waitUntil: 'networkidle2' });
   
-    const products = await page.$$('.Paper_Paper__HIHv0');
+    const products = await page.$$(uiLayout);
   
     const results = [];
   
     for (let product of products) {
         try {
-          await product.waitForSelector('.SearchCard_ProductCard_Image__ffKkn', { timeout: 5000 });
-          const container = await product.$('[data-testid="product-card::image"]'); // Select the div that contains the image
-          const imageElement = await container.$('img'); // Select the image element within the div
-          const image = await imageElement.evaluate(img => img.src); // Get the 'src' attribute of the image element
+        //   await product.waitForSelector('.SearchCard_ProductCard_Image__ffKkn', { timeout: 5000 });
+          let image = '';
+          if (brand === 'buscape') {
+              const container = await product.$(uiImage); 
+              const imageElement = await container.$('img');
+              image = await imageElement.evaluate(img => img.src);
+          }
+          else  {
+            image = await product.$eval(uiImage, img => img.src);
+        }
 
-          const description = await product.$eval('.SearchCard_ProductCard_Name__ZaO5o', title => title.textContent);
+          const description = await product.$eval(uiDescription, title => title.textContent);
 
-          let price = await product.$eval('.Text_MobileHeadingS__Zxam2', price => price.textContent);
+          let price = await product.$eval(uiPrice, price => price.textContent);
           if (isNaN(price)) price = parseFloat(price.replace(/[^\d,.-]/g, '').replace(',', '.'))
           
           results.push({ image, description, price });
@@ -45,4 +48,4 @@ async function scrapeMercadoLivre({brand, category}) {
   
   
 
-module.exports = scrapeMercadoLivre;
+module.exports = scrape;
