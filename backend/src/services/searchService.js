@@ -15,8 +15,8 @@ const getAll = async ({brand, category, q}) => {
         search: q,
         results
     };
-    let created = await Products.create(newData);
-    return created;
+    await Products.create(newData);
+    return [newData];
   }
   
   module.exports = {

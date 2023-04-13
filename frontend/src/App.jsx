@@ -5,12 +5,12 @@ import ProductCard from './Cards/productCard';
 
 function App() {
   const [filters, setFilters] = useState({
+    brand: 'mercadolivre',
     category: 'mobile',
-    brand: 'Mercado Livre',
   });
   const [search, setSearch] = useState('');
-  const [products, setProducts] = useState([]);
-
+  const [products, setProducts] = useState({});
+  const [loading, setLoading] = useState(false);
   const filterChange = ({ target }) => {
     const { id, value } = target;
     setFilters({ ...filters, [id]: value });
@@ -21,20 +21,20 @@ function App() {
   };
 
   const submitSearch = async () => {
-    const { brand, category } = filters;
+    setLoading(true);
     const api = axios.create({
       baseURL: 'http://localhost:3001',
     });
-    const url = `/${brand}/${category}/search?q=${search}`;
+    const url = `/${filters.brand}/${filters.category}/search?q=${search}`;
     await api.get(url)
       .then((response) => {
-        setProducts(response.data);
+        setProducts(response.data[0]);
       })
       .catch((error) => error);
   };
 
   useEffect(() => {
-    console.log(products);
+    setLoading(false);
   }, [products]);
 
   return (
@@ -52,8 +52,8 @@ function App() {
         <label htmlFor="brand">
           Brand:
           <select id="brand" name="brand" onChange={(e) => filterChange(e)}>
-            <option value="Mercado Livre">Mercado Livre</option>
-            <option value="Buscapé">Buscapé</option>
+            <option value="mercadolivre">Mercado Livre</option>
+            <option value="buscape">Buscapé</option>
           </select>
         </label>
       </div>
@@ -63,18 +63,17 @@ function App() {
       </div>
       <div className="results">
         {
-          !products.length >= 1 ? (<p>No results found.</p>)
+          loading ? (<p>No results found.</p>)
             : (
-              <div>
-                <div className="product-grid">
-                  {products.results.map((product) => (
-                    <ProductCard
-                      image={product.image}
-                      description={product.description}
-                      price={product.price}
-                    />
-                  ))}
-                </div>
+              <div className="product-grid">
+                {products?.results?.map((product) => (
+                  <ProductCard
+                    key={product.price + Math.random()}
+                    image={product.image}
+                    description={product.description}
+                    price={product.price}
+                  />
+                ))}
               </div>
             )
         }
