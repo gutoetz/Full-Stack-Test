@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import axios from 'axios';
+import ProductCard from './Cards/productCard';
 
 function App() {
   const [filters, setFilters] = useState({
     category: 'mobile',
     brand: 'Mercado Livre',
   });
-  // const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('');
+  const [products, setProducts] = useState([]);
 
   const filterChange = ({ target }) => {
     const { id, value } = target;
@@ -14,15 +17,25 @@ function App() {
   };
 
   const inputChange = ({ target }) => {
-    // setSearch(target.value);
-    console.log(target);
+    setSearch(target.value);
   };
 
-  const submitSearch = () => {
-
+  const submitSearch = async () => {
+    const { brand, category } = filters;
+    const api = axios.create({
+      baseURL: 'http://localhost:3001',
+    });
+    const url = `/${brand}/${category}/search?q=${search}`;
+    await api.get(url)
+      .then((response) => {
+        setProducts(response.data);
+      })
+      .catch((error) => error);
   };
+
   useEffect(() => {
-  }, []);
+    console.log(products);
+  }, [products]);
 
   return (
     <div className="container">
@@ -49,7 +62,22 @@ function App() {
         <button type="button" id="search-button" onClick={submitSearch}>Search</button>
       </div>
       <div className="results">
-        <p>No results found.</p>
+        {
+          !products.length >= 1 ? (<p>No results found.</p>)
+            : (
+              <div>
+                <div className="product-grid">
+                  {products.results.map((product) => (
+                    <ProductCard
+                      image={product.image}
+                      description={product.description}
+                      price={product.price}
+                    />
+                  ))}
+                </div>
+              </div>
+            )
+        }
       </div>
     </div>
   );
