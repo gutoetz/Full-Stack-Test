@@ -23,7 +23,7 @@ function App() {
   const submitSearch = async () => {
     setLoading(true);
     const api = axios.create({
-      baseURL: 'http://localhost:3000',
+      baseURL: 'https://devilish-reaction-production.up.railway.app/',
     });
     const url = `/${filters.brand}/${filters.category}/search?q=${search}`;
     await api.get(url)
