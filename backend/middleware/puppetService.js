@@ -14,11 +14,7 @@ async function scrape({brand, category, q}) {
 
   const browser = await puppeteer.launch({
     headless: true,
-    args: [
-      '--disable-dev-shm-usage',
-      '--disable-setuid-sandbox',
-      '--no-sandbox',
-    ],
+    args: process.getuid() == 0 ? ['--no-sandbox'] : undefined
   });
 
   const page = await browser.newPage();
