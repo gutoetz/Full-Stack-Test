@@ -20,7 +20,8 @@ async function scrape({brand, category, q}) {
       '--disable-setuid-sandbox',
       '--disable-accelerated-2d-canvas',
       '--disable-gpu'
-    ]
+    ],
+    ignoreHTTPSErrors: true
   });
   
   const page = await browser.newPage();
