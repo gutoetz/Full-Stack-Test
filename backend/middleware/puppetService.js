@@ -12,20 +12,12 @@ async function scrape({brand, category, q}) {
   let uiDescription = brand === 'mercadolivre' ? '.ui-search-item__title' : '.SearchCard_ProductCard_Name__ZaO5o';
   let uiPrice = brand === 'mercadolivre' ? '.price-tag-fraction' : '.Text_MobileHeadingS__Zxam2';
 
-  const args = [
-  '--disable-dev-shm-usage',
-  '--disable-setuid-sandbox',
-  '--no-sandbox',
-  '--disable-seccomp-filter-sandbox',
-];
-
-  const browser = async () => {
-  puppetBrowser = await puppeteer.launch({
-    args: ['--no-sandbox'],
-    timeout: 10000,
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    ignoreDefaultArgs: ['--disable-extensions']
   });
-};
-  
+
   const page = await browser.newPage();
   await page.setUserAgent(
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"
@@ -40,32 +32,34 @@ async function scrape({brand, category, q}) {
 
   const results = [];
   let count = 0; // Inicializa o contador
-
+  
   for (let product of products) {
-    try {
-      let image = '';
-      if (brand === 'buscape') {
-        const container = await product.$(uiImage); 
-        const imageElement = await container.$('img');
-        image = await imageElement.evaluate(img => img.src);
-      } else {
-        image = await product.$eval(uiImage, img => img.src);
+      try {
+        let image = '';
+        if (brand === 'buscape') {
+            const container = await product.$(uiImage); 
+            const imageElement = await container.$('img');
+            image = await imageElement.evaluate(img => img.src);
+        }
+        else  {
+          image = await product.$eval(uiImage, img => img.src);
       }
 
-      const description = await product.$eval(uiDescription, title => title.textContent);
+        const description = await product.$eval(uiDescription, title => title.textContent);
 
-      let price = await product.$eval(uiPrice, price => price.textContent);
-      if (isNaN(price)) price = parseFloat(price.replace(/[^\d,.-]/g, '').replace(',', '.'))
-      price = price.toString();
-      results.push({ image, description, price });
-      count++; // Incrementa o contador após adicionar um produto aos resultados
-      
-      if (count === 3) break; // Encerra o loop após adicionar 10 produtos aos resultados
-
-    } catch (error) {
-      console.log(`Erro ao extrair informações do produto: ${error}`);
+        let price = await product.$eval(uiPrice, price => price.textContent);
+        if (isNaN(price)) price = parseFloat(price.replace(/[^\d,.-]/g, '').replace(',', '.'))
+        price = price.toString();
+        results.push({ image, description, price });
+        count++; // Incrementa o contador após adicionar um produto aos resultados
+        
+        if (count === 3) break; // Encerra o loop após adicionar 10 produtos aos resultados
+        
+      } catch (error) {
+        console.log(`Erro ao extrair informações do produto: ${error}`);
+      }
     }
-  }
+    
 
   await browser.close();
 
