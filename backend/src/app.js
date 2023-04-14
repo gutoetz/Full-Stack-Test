@@ -7,7 +7,7 @@ const cors = require('cors');
 
 dotenv.config()
 
-mongoose.connect('mongodb+srv://userTest:BkjMgt3wM78dNX2@searchapp.ysew5en.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true });
+mongoose.connect('mongodb+srv://userTest:BkjMgt3wM78dNX2@searchapp.ysew5en.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true });
 
 app.use(express.json());
 

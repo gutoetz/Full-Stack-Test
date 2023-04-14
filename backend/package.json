@@ -4,7 +4,6 @@
   "description": "",
   "main": ".eslintrc.js",
   "scripts": {
-    "start": "npm install && nodemon ./src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/app.js",
     "start": "npm install && node ./src/app.js",
