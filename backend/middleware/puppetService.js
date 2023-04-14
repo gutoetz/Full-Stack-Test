@@ -19,11 +19,13 @@ async function scrape({brand, category, q}) {
   '--disable-seccomp-filter-sandbox',
 ];
 
- const browser = await puppeteer.launch({
-  headless: true,
-  args,
- });
-
+  const browser = async () => {
+  puppetBrowser = await puppeteer.launch({
+    args: ['--no-sandbox'],
+    timeout: 10000,
+  });
+};
+  
   const page = await browser.newPage();
   await page.setUserAgent(
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"
