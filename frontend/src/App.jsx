@@ -4,7 +4,6 @@ import axios from 'axios';
 import ProductCard from './Cards/productCard';
 
 function App() {
-  const urlEnv = process.env.URL;
   const [filters, setFilters] = useState({
     brand: 'mercadolivre',
     category: 'mobile',
@@ -24,7 +23,7 @@ function App() {
   const submitSearch = async () => {
     setLoading(true);
     const api = axios.create({
-      baseURL: urlEnv || 'http://localhost:3001',
+      baseURL: 'http://localhost:3000',
     });
     const url = `/${filters.brand}/${filters.category}/search?q=${search}`;
     await api.get(url)
