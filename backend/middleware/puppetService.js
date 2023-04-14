@@ -1,9 +1,4 @@
 const puppeteer = require('puppeteer');
-const puppeteerExtra = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-
-puppeteerExtra.use(StealthPlugin());
-
 
 async function scrape({brand, category, q}) {
   let categoryUsed = '';
@@ -17,7 +12,7 @@ async function scrape({brand, category, q}) {
   let uiDescription = brand === 'mercadolivre' ? '.ui-search-item__title' : '.SearchCard_ProductCard_Name__ZaO5o';
   let uiPrice = brand === 'mercadolivre' ? '.price-tag-fraction' : '.Text_MobileHeadingS__Zxam2';
 
-  const browser = await puppeteerExtra.launch({
+  const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
@@ -26,7 +21,7 @@ async function scrape({brand, category, q}) {
   await page.setUserAgent(
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"
   );
-  
+
   await Promise.all([
     page.goto(url, { waitUntil: 'networkidle2' }),
     page.waitForNavigation({ waitUntil: 'networkidle2' })
