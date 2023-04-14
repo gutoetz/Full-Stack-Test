@@ -12,10 +12,17 @@ async function scrape({brand, category, q}) {
   let uiDescription = brand === 'mercadolivre' ? '.ui-search-item__title' : '.SearchCard_ProductCard_Name__ZaO5o';
   let uiPrice = brand === 'mercadolivre' ? '.price-tag-fraction' : '.Text_MobileHeadingS__Zxam2';
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: process.getuid() == 0 ? ['--no-sandbox'] : undefined
-  });
+  const args = [
+  '--disable-dev-shm-usage',
+  '--disable-setuid-sandbox',
+  '--no-sandbox',
+  '--disable-seccomp-filter-sandbox',
+];
+
+ const browser = await puppeteer.launch({
+  headless: true,
+  args,
+ });
 
   const page = await browser.newPage();
   await page.setUserAgent(
