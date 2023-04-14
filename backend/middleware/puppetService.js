@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 
 async function scrape({brand, category, q}) {
   let categoryUsed = '';
