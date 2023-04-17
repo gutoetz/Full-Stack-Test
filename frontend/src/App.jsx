@@ -39,31 +39,37 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Search Page</h1>
-      <div className="filters">
-        <label htmlFor="category">
-          Category:
-          <select id="category" name="category" onChange={(e) => filterChange(e)}>
-            <option value="mobile">Mobile</option>
-            <option value="refrigerator">Refrigerator</option>
-            <option value="tv">TV</option>
-          </select>
-        </label>
-        <label htmlFor="brand">
-          Brand:
-          <select id="brand" name="brand" onChange={(e) => filterChange(e)}>
-            <option value="mercadolivre">Mercado Livre</option>
-            <option value="buscape">Buscapé</option>
-          </select>
-        </label>
-      </div>
-      <div className="search-box">
-        <input type="text" id="search-input" placeholder="Search..." onChange={(e) => inputChange(e)} />
-        <button type="button" id="search-button" onClick={submitSearch}>Search</button>
-      </div>
+      <header>
+        <h1>Scrape Pages</h1>
+        <div className="filters">
+          <label htmlFor="category">
+            Category:
+            <select id="category" name="category" onChange={(e) => filterChange(e)}>
+              <option value="mobile">Mobile</option>
+              <option value="refrigerator">Refrigerator</option>
+              <option value="tv">TV</option>
+            </select>
+          </label>
+          <label htmlFor="brand">
+            Brand:
+            <select id="brand" name="brand" onChange={(e) => filterChange(e)}>
+              <option value="mercadolivre">Mercado Livre</option>
+              <option value="buscape">Buscapé</option>
+            </select>
+          </label>
+        </div>
+        <div className="search-box">
+          <input type="text" id="search-input" placeholder="Search..." onChange={(e) => inputChange(e)} />
+          <button type="button" id="search-button" onClick={submitSearch}>Search</button>
+        </div>
+      </header>
       <div className="results">
         {
-          loading ? (<p>No results found.</p>)
+          loading ? (
+            <div className="loading-container">
+              <div className="loading" />
+            </div>
+          )
             : (
               <div className="product-grid">
                 {products?.results?.map((product) => (

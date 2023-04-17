@@ -10,7 +10,7 @@ function ProductCard(props) {
       <div className="product-details">
         <h2 className="product-title">{description}</h2>
         <p className="product-value">{`R$ ${price}`}</p>
-        <button type="button" className="product-button">Comprar</button>
+        <button type="button" className="product-button">Visitar Link</button>
       </div>
     </div>
   );
