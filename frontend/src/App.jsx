@@ -25,7 +25,7 @@ function App() {
     const api = axios.create({
       baseURL: 'https://devilish-reaction-production.up.railway.app/',
     });
-    const url = `/${filters.brand}/${filters.category}/search?q=${search}`;
+    const url = `/${filters.brand}/${filters.category}/search?q=${search.replace(/\s+/g, '-')}`;
     await api.get(url)
       .then((response) => {
         setProducts(response.data[0]);
@@ -71,15 +71,18 @@ function App() {
             </div>
           )
             : (
-              <div className="product-grid">
-                {products?.results?.map((product) => (
-                  <ProductCard
-                    key={product.price + Math.random()}
-                    image={product.image}
-                    description={product.description}
-                    price={product.price}
-                  />
-                ))}
+              <div className="container">
+                <div className="cards-container">
+                  {products?.results?.map((product) => (
+                    <ProductCard
+                      key={product.price + Math.random()}
+                      image={product.image}
+                      description={product.description}
+                      price={product.price}
+                      link={product.link}
+                    />
+                  ))}
+                </div>
               </div>
             )
         }
