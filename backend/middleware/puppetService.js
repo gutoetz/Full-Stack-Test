@@ -11,6 +11,7 @@ async function scrape({brand, category, q}) {
   let uiImage = brand === 'mercadolivre' ? '.shops__image-element' : '[data-testid="product-card::image"]';
   let uiDescription = brand === 'mercadolivre' ? '.ui-search-item__title' : '.SearchCard_ProductCard_Name__ZaO5o';
   let uiPrice = brand === 'mercadolivre' ? '.price-tag-fraction' : '.Text_MobileHeadingS__Zxam2';
+  let uiUrl = brand === 'mercadolivre' ? '.ui-search-link' : '.SearchCard_ProductCard_Inner__7JhKb'
 
   const browser = await puppeteer.launch({
     headless: true,
@@ -43,14 +44,14 @@ async function scrape({brand, category, q}) {
       }
 
         const description = await product.$eval(uiDescription, title => title.textContent);
-
+        const link = await product.$eval(uiUrl, a => a.href);
         let price = await product.$eval(uiPrice, price => price.textContent);
         if (isNaN(price)) price = parseFloat(price.replace(/[^\d,.-]/g, '').replace(',', '.'))
         price = price.toString();
-        results.push({ image, description, price });
-        count++; // Incrementa o contador após adicionar um produto aos resultados
+        results.push({ image, description, price, link });
+        count++;
         
-        if (count === 3) break; // Encerra o loop após adicionar 10 produtos aos resultados
+        if (count === 3) break;
         
       } catch (error) {
         console.log(`Erro ao extrair informações do produto: ${error}`);

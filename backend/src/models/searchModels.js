@@ -6,6 +6,7 @@ const dbSchema = new mongoose.Schema({
   search: String,
   results: [{
     _id: false,
+    link: String,
     image: String,
     description:String,
     price: String
